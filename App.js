@@ -12,9 +12,10 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SettingScreen" headerMode="none">
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="SettingScreen" component={SettingScreen} />
         {/* <Stack.Screen name="PlayScreen" component={PlayScreen} /> */}
         {/* <Stack.Screen name="StatScreen" component={StatScreen} /> */}
-        <Stack.Screen name="SettingScreen" component={SettingScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
