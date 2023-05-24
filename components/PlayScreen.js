@@ -6,6 +6,10 @@ const cellArray = []
 const numberArray = []
 
 for (let i = 0; i < 9; i++) {
+  cellArray[i] = []
+}
+
+for (let i = 0; i < 9; i++) {
   numberArray[i] = []
 }
 
@@ -46,14 +50,26 @@ const findValueForNextCell = (i, j) => {
   return true;
 }
 
+const showHints = (hintsCount) => {
+  
+  for (let i = 0; i < hintsCount; i++) {
+    let row = Math.floor(Math.random() * 9);
+    let col = Math.floor(Math.random() * 9);
+
+    cellArray[row][col] = <Cell isLock={false} text={''}/>
+  }
+}
+
 const Board = () => {
   findValueForNextCell(0, -1)
   
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      cellArray.push(<Cell text={numberArray[i][j]}/>)
+      cellArray[i][j] = <Cell isLock={true} text={numberArray[i][j]}/>
     }
   }
+
+  showHints(45)
 
   return (
     <View style={styles.board}>
@@ -62,17 +78,17 @@ const Board = () => {
   );
 }
 
-const Cell = ({text}) => {
+const Cell = ({isLock, text, event}) => {
   return (
-    <TouchableOpacity disabled={true} style={styles.cell}>
+    <TouchableOpacity disabled={isLock} style={styles.cell} onPress={event}>
       <Text style={styles.number}>{text}</Text>
     </TouchableOpacity>
   );
 }
 
-const NumberButton = ({text}) => {
+const NumberButton = ({text, event}) => {
   return (
-    <TouchableOpacity disabled={false} style={styles.cell}>
+    <TouchableOpacity disabled={false} style={styles.cell} onPress={event}>
       <Text style={styles.number}>{text}</Text>
     </TouchableOpacity>
   );
@@ -147,7 +163,7 @@ const styles = StyleSheet.create({
     width: 390,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingTop: 20
+    paddingTop: '50%'
   },
 });
 
