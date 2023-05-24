@@ -5,17 +5,21 @@ import { Ionicons } from 'react-native-vector-icons';
 const cellArray = []
 const numberArray = []
 
+for (let i = 0; i < 9; i++) {
+  numberArray[i] = []
+}
+
 const isValidNumber = (value, x, y) => {
   for (let i = 0; i < 9; i++) {
     if (i != y && numberArray[x][i] == value)
-        return false;
+      return false;
     if (i != x && numberArray[i][y] == value)
-        return false;
+      return false;
   }
   for (let i = x - (x % 3); i < x - (x % 3) + 3; i++) {
     for (let j = y - (y % 3); j < y - (y % 3) + 3; j++) {
       if (i != x && j != y && numberArray[i][j] == value)
-          return false;
+        return false;
     }
   }
   return true;
@@ -43,15 +47,7 @@ const findValueForNextCell = (i, j) => {
 }
 
 const Board = () => {
-  for (let i = 0; i < 9; i++) {
-    numberArray[i] = []
-  }
-
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      numberArray.push(findValueForNextCell(i, j));
-    }
-  }
+  findValueForNextCell(0, -1)
   
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -68,7 +64,7 @@ const Board = () => {
 
 const Cell = ({text}) => {
   return (
-    <TouchableOpacity style={styles.cell}>
+    <TouchableOpacity disabled={true} style={styles.cell}>
       <Text style={styles.number}>{text}</Text>
     </TouchableOpacity>
   );
@@ -93,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 160,
+    paddingTop: 140,
     paddingBottom: 40,
   },
   cell: {
