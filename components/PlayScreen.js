@@ -70,11 +70,33 @@ const Cell = ({text}) => {
   );
 }
 
+const NumberButton = ({text}) => {
+  return (
+    <TouchableOpacity disabled={false} style={styles.cell}>
+      <Text style={styles.number}>{text}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const PlayScreen = () => {
   return (
     <ImageBackground source={require('../assets/BG-HomeScreen.png')} style={styles.background}>
       <View style={styles.container}>
-        <Board/>
+        <View style={styles.header}>
+          <Board/>
+        </View>
+
+        <View style={styles.footer}>
+          <NumberButton text={1}/>
+          <NumberButton text={2}/>
+          <NumberButton text={3}/>
+          <NumberButton text={4}/>
+          <NumberButton text={5}/>
+          <NumberButton text={6}/>
+          <NumberButton text={7}/>
+          <NumberButton text={8}/>
+          <NumberButton text={9}/>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -89,7 +111,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 140,
+    paddingTop: 120,
     paddingBottom: 40,
   },
   cell: {
@@ -111,7 +133,22 @@ const styles = StyleSheet.create({
   number: {
     fontSize: 20,
     color: 'black'
-  }
+  },
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 390
+  },
+  footer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    width: 390,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingTop: 20
+  },
 });
 
 export default PlayScreen;
