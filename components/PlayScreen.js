@@ -50,25 +50,36 @@ const findValueForNextCell = (i, j) => {
 }
 
 const showHints = (hintsCount) => {
-
+  
   for (let i = 0; i < hintsCount; i++) {
     let row = Math.floor(Math.random() * 9);
     let col = Math.floor(Math.random() * 9);
 
-    cellArray[row][col] = <Cell isLocked={false} text={''} />
+    cellArray[row][col] = <Cell isLocked={true} value={numberArray[row][col]} x={row} y={col}/>
   }
+}
+
+const check = () => {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (cellArray[i][j].value !== numberArray[i][j]) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 const Board = () => {
   findValueForNextCell(0, -1)
-
+  
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      cellArray[i][j] = <Cell isLocked={true} text={numberArray[i][j]} x={i} y={j} />
+      cellArray[i][j] = <Cell isLocked={false} value={0} x={i} y={j}/>
     }
   }
 
-  showHints(45)
+   showHints(45)
 
   return (
     <View style={styles.board}>
@@ -77,25 +88,29 @@ const Board = () => {
   );
 }
 
-const Cell = ({ value, onChange, text, isLocked, x, y }) => {
-  const [inputValue, setInputValue] = useState(value);
+const Cell = ({ value, isLocked, x, y }) => {
+  const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (text) => {
     setInputValue(text);
   };
+  
+  const isInputCorrect = () => {
+    return inputValue === value.toString();
+  }
 
-  if (text !== '') {
+  if (value !== 0) {
     return (
-      <TouchableOpacity disabled={isLocked} style={styles.cell}>
-        <Text style={styles.number}>{text}</Text>
+      <TouchableOpacity disabled={isLocked} style={styles.cell} x={x} y={y}>
+        <Text style={styles.number}>{value}</Text>
       </TouchableOpacity>
     );
   }
   else {
     return (
-      <TouchableOpacity disabled={isLocked} style={styles.cell}>
+      <TouchableOpacity disabled={isLocked} style={styles.cell} x={x} y={y}>
         <TextInput
-          style={styles.number}
+          style={[styles.number, isInputCorrect() ? styles.correct : styles.incorrect]}
           value={inputValue}
           onChangeText={handleInputChange}
           keyboardType="numeric"
@@ -104,15 +119,23 @@ const Cell = ({ value, onChange, text, isLocked, x, y }) => {
       </TouchableOpacity>
     );
   }
-
+  
 }
 
 const PlayScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Board />
+        <Board/>
       </View>
+      
+      <TouchableOpacity style={styles.button}
+      onPress={() => {
+        check ? alert('You have solved the puzzle') : alert('There is still incorrect cells...')
+      }}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -149,6 +172,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 390
+  },
+  button: {
+    backgroundColor: '#4287f5',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginVertical: 20,
+  },
+  correct: {
+    backgroundColor: '#A5D049',
+    fontSize: 20,
+    color: 'black'
+  },
+  incorrect: {
+    backgroundColor: '#EC7B67',
+    fontSize: 20,
+    color: 'black'
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
