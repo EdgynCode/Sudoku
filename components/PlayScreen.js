@@ -1,6 +1,5 @@
-import { StyleSheet, View, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from 'react-native-vector-icons';
+import { StyleSheet, View, TouchableOpacity, ImageBackground, Image, Text, Alert, TextInput } from 'react-native';
+import { useState } from 'react';
 
 const cellArray = []
 const numberArray = []
@@ -51,21 +50,21 @@ const findValueForNextCell = (i, j) => {
 }
 
 const showHints = (hintsCount) => {
-  
+
   for (let i = 0; i < hintsCount; i++) {
     let row = Math.floor(Math.random() * 9);
     let col = Math.floor(Math.random() * 9);
 
-    cellArray[row][col] = <Cell isLock={false} text={''}/>
+    cellArray[row][col] = <Cell isLocked={false} text={''} />
   }
 }
 
 const Board = () => {
   findValueForNextCell(0, -1)
-  
+
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      cellArray[i][j] = <Cell isLock={true} text={numberArray[i][j]}/>
+      cellArray[i][j] = <Cell isLocked={true} text={numberArray[i][j]} x={i} y={j} />
     }
   }
 
@@ -78,56 +77,51 @@ const Board = () => {
   );
 }
 
-const Cell = ({isLock, text, event}) => {
-  return (
-    <TouchableOpacity disabled={isLock} style={styles.cell} onPress={event}>
-      <Text style={styles.number}>{text}</Text>
-    </TouchableOpacity>
-  );
-}
+const Cell = ({ value, onChange, text, isLocked, x, y }) => {
+  const [inputValue, setInputValue] = useState(value);
 
-const NumberButton = ({text, event}) => {
-  return (
-    <TouchableOpacity disabled={false} style={styles.cell} onPress={event}>
-      <Text style={styles.number}>{text}</Text>
-    </TouchableOpacity>
-  );
+  const handleInputChange = (text) => {
+    setInputValue(text);
+  };
+
+  if (text !== '') {
+    return (
+      <TouchableOpacity disabled={isLocked} style={styles.cell}>
+        <Text style={styles.number}>{text}</Text>
+      </TouchableOpacity>
+    );
+  }
+  else {
+    return (
+      <TouchableOpacity disabled={isLocked} style={styles.cell}>
+        <TextInput
+          style={styles.number}
+          value={inputValue}
+          onChangeText={handleInputChange}
+          keyboardType="numeric"
+          maxLength={1}
+        />
+      </TouchableOpacity>
+    );
+  }
+
 }
 
 const PlayScreen = () => {
   return (
-    <ImageBackground source={require('../assets/BG-HomeScreen.png')} style={styles.background}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Board/>
-        </View>
-
-        <View style={styles.footer}>
-          <NumberButton text={1}/>
-          <NumberButton text={2}/>
-          <NumberButton text={3}/>
-          <NumberButton text={4}/>
-          <NumberButton text={5}/>
-          <NumberButton text={6}/>
-          <NumberButton text={7}/>
-          <NumberButton text={8}/>
-          <NumberButton text={9}/>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Board />
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 120,
+    paddingTop: 140,
     paddingBottom: 40,
   },
   cell: {
@@ -155,15 +149,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 390
-  },
-  footer: {
-    flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    width: 390,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingTop: '50%'
   },
 });
 
