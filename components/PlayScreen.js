@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 const cellArray = []
 const numberArray = []
+const answerArray = []
 
 for (let i = 0; i < 9; i++) {
   cellArray[i] = []
@@ -50,19 +51,37 @@ const findValueForNextCell = (i, j) => {
 }
 
 const showHints = (hintsCount) => {
+  for (let i = 0; i < 9; i++) {
+    answerArray[i] = []
+    for (let j = 0; j < 9; j++) {
+      answerArray[i][j] = numberArray[i][j] 
+    }
+  }
   
   for (let i = 0; i < hintsCount; i++) {
     let row = Math.floor(Math.random() * 9);
     let col = Math.floor(Math.random() * 9);
 
-    cellArray[row][col] = <Cell isLocked={true} value={numberArray[row][col]} x={row} y={col}/>
+    answerArray[row][col] = 0;
+    cellArray[row][col] = <Cell isLocked={false} value={answerArray[row][col]} x={row} y={col} />
+  }
+
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      cellArray[i][j] = <Cell isLocked={true} value={answerArray[i][j]} x={i} y={j}/>
+    }
   }
 }
 
 const check = () => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
-      if (cellArray[i][j].value !== numberArray[i][j]) {
+
+      if (answerArray[i][j] === '') {
+        return false;
+      }
+
+      if (answerArray[i][j] !== numberArray[i][j]) {
         return false;
       }
     }
@@ -72,14 +91,7 @@ const check = () => {
 
 const Board = () => {
   findValueForNextCell(0, -1)
-  
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      cellArray[i][j] = <Cell isLocked={false} value={0} x={i} y={j}/>
-    }
-  }
-
-   showHints(45)
+  showHints(45)
 
   return (
     <View style={styles.board}>
@@ -93,6 +105,8 @@ const Cell = ({ value, isLocked, x, y }) => {
 
   const handleInputChange = (text) => {
     setInputValue(text);
+    answerArray[x][y] = text;
+    alert(`answerArray ${x}, ${y} = ${text}`)
   };
   
   const isInputCorrect = () => {
@@ -119,8 +133,8 @@ const Cell = ({ value, isLocked, x, y }) => {
       </TouchableOpacity>
     );
   }
-  
 }
+
 
 const PlayScreen = () => {
   return (
@@ -154,7 +168,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    textAlign: 'center'
   },
   board: {
     width: 350,
